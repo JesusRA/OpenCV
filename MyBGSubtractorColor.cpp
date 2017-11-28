@@ -23,9 +23,9 @@ MyBGSubtractorColor::MyBGSubtractorColor(VideoCapture vc) {
 	upper_bounds = vector<Scalar>(max_samples);
 	means = vector<Scalar>(max_samples);
 
-	h_low = 12;
-  h_up = 7;
-	l_low = 30;
+	h_low = 100;
+  h_up = 100;
+	l_low = 100;
 	l_up = 40;
 	s_low = 80;
 	s_up = 80;

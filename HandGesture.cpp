@@ -13,12 +13,12 @@ using namespace cv;
 using namespace std;
 
 HandGesture::HandGesture() {
-	
+
 }
 
 
 double HandGesture::getAngle(Point s, Point e, Point f) {
-	
+
 	double v1[2],v2[2];
 	v1[0] = s.x - f.x;
 	v1[1] = s.y - f.y;
@@ -35,24 +35,38 @@ double HandGesture::getAngle(Point s, Point e, Point f) {
 	return (angle * 180.0/CV_PI);
 }
 void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
-	
+
 	vector<vector<Point> > contours;
 	Mat temp_mask;
 	mask.copyTo(temp_mask);
 	int index = -1;
 
-        // CODIGO 3.1
-        // detección del contorno de la mano y selección del contorno más largo
-        //...
+  // CODIGO 3.1
+  // detección del contorno de la mano y selección del contorno más largo
+  //...
 
-        // pintar el contorno
-        //...
-	
+	findContours(temp_mask, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+	vector<Point> maslargo = contours[0];
+	index = 0;
+	for (int i = 1; i < contours.size(); i++)
+	{
+		if (contours[i].size() > maslargo.size())
+		{
+			maslargo = contours[i];
+			index = i;
+		}
+	}
 
-	//obtener el convex hull	
+  // pintar el contorno
+  //...
+
+	drawContours(output_img, contours, index, cv::Scalar(255,0,0), 2, 8,
+		vector<Vec4i>(), 0, Point());
+
+	//obtener el convex hull
 	vector<int> hull;
 	convexHull(contours[index],hull);
-	
+
 	// pintar el convex hull
 	Point pt0 = contours[index][hull[hull.size()-1]];
 	for (int i = 0; i < hull.size(); i++)
@@ -61,12 +75,12 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 		line(output_img, pt0, pt, Scalar(0, 0, 255), 2, CV_AA);
 		pt0 = pt;
 	}
-	
+
         //obtener los defectos de convexidad
 	vector<Vec4i> defects;
 	convexityDefects(contours[index], hull, defects);
-		
-		
+
+
 		int cont = 0;
 		for (int i = 0; i < defects.size(); i++) {
 			Point s = contours[index][defects[i][0]];
@@ -74,12 +88,12 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 			Point f = contours[index][defects[i][2]];
 			float depth = (float)defects[i][3] / 256.0;
 			double angle = getAngle(s, e, f);
-		
+
                         // CODIGO 3.2
                         // filtrar y mostrar los defectos de convexidad
                         //...
 
                 }
-	
-		
+
+
 }

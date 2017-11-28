@@ -47,15 +47,13 @@ int main(int argc, char** argv)
 	namedWindow("Reconocimiento");
 	namedWindow("Fondo");
 
-        // creamos el objeto para la substracci�n de fondo
-
-				MyBGSubtractorColor imagen (cap);
-				imagen.LearnModel();
-
+  // creamos el objeto para la substracci�n de Fondo
 	// creamos el objeto para el reconocimiento de gestos
-
 	// iniciamos el proceso de obtenci�n del modelo del fondo
 
+	MyBGSubtractorColor imagen (cap);
+	imagen.LearnModel();
+	HandGesture contorno;
 
 	for (;;)
 	{
@@ -71,16 +69,29 @@ int main(int argc, char** argv)
 
 		// obtenemos la m�scara del fondo con el frame actual
 		imagen.ObtainBGMask(frame, bgmask);
-                // CODIGO 2.1
-                // limpiar la m�scara del fondo de ruido
-                //...
+    // CODIGO 2.1
+    // limpiar la m�scara del fondo de ruido
+    //...
 
+		int dilation_size = 2;
+		int dilation_size2 = 3;
+		Mat element = getStructuringElement(MORPH_RECT,
+			Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+			Point(dilation_size, dilation_size));
+		Mat element2 = getStructuringElement(MORPH_RECT,
+			Size(2 * dilation_size2 + 1, 2 * dilation_size2 + 1),
+			Point(dilation_size2, dilation_size2));
+
+		medianBlur(bgmask, bgmask, 5);
+		dilate(bgmask,bgmask,element);
+		erode(bgmask,bgmask,element2);
+		medianBlur(bgmask, bgmask, 5);
 
 		// deteccion de las caracter�sticas de la mano
 
-                // mostramos el resultado de la sobstracci�n de fondo
-
-                // mostramos el resultado del reconocimento de gestos
+		contorno.FeaturesDetection(bgmask,frame);
+	  // mostramos el resultado de la sobstracci�n de fondo
+	  // mostramos el resultado del reconocimento de gestos
 
 		imshow("Reconocimiento", frame);
 		imshow("Fondo", bgmask);
