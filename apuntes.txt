@@ -1,3 +1,13 @@
 ¿Por qué el filtro de la mediana y no el de la media?
   El de la media es una combinación de los colores de la vecindad, pueden cambiar los colores
   La mediana sólo coge el color más presente
+
+boundingRect
+  calcular area
+
+guardar lista y cada frame los pinta o sumar dos imagenes
+
+posicion relativa de los puntos (detectar movimiento)
+
+putText
+  escribe en la imagen

@@ -76,27 +76,40 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 		pt0 = pt;
 	}
 
-        //obtener los defectos de convexidad
+  //obtener los defectos de convexidad
 	vector<Vec4i> defects;
 	convexityDefects(contours[index], hull, defects);
 
 
-		int cont = 0;
-		for (int i = 0; i < defects.size(); i++) {
-			Point s = contours[index][defects[i][0]];
-			Point e = contours[index][defects[i][1]];
-			Point f = contours[index][defects[i][2]];
-			float depth = (float)defects[i][3] / 256.0;
-			double angle = getAngle(s, e, f);
+	int cont = 0;
+	vector<Point> puntos;
+	Point s,e,f;
 
-                        // CODIGO 3.2
-                        // filtrar y mostrar los defectos de convexidad
-                   if (angle <= 90){
-                        circle(output_img,f,5,Scalar(0,255,0),3);
-			
-			}
+	for (int i = 0; i < defects.size(); i++) {
+		s = contours[index][defects[i][0]];
+		e = contours[index][defects[i][1]];
+		f = contours[index][defects[i][2]];
+		float depth = (float)defects[i][3] / 256.0;
+		double angle = getAngle(s, e, f);
+		
+    // CODIGO 3.2
+    // filtrar y mostrar los defectos de convexidad
+		if (angle <= 90){
+    	circle(output_img,f,5,Scalar(0,255,0),3);
+			cont += 1;
 
-                }
+		}
+  }
 
+	// Cuenta puntos
+	stringstream ss;
+	ss << cont;
+	string num_puntos = ss.str();
+	putText(output_img, num_puntos, Point2f(100,100), FONT_HERSHEY_PLAIN, 2,  cvScalar(0,0,0), 2);
 
+	// dibujar
+	if (cont == 1)
+	{
+		line(output_img, puntos[0], puntos[1], cvScalar(0,0,0), 1, 8);
+	}
 }
