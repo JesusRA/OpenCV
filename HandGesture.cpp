@@ -57,6 +57,15 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 		}
 	}
 
+	Rect rect = boundingRect(contours[index]);
+	Point pt1, pt2;
+	pt1.x = rect.x;
+	pt1.y = rect.y;
+	pt2.x = rect.x + rect.width;
+	pt2.y = rect.y + rect.height;
+
+	rectangle(output_img, pt1, pt2, CV_RGB(255,255,0),1);
+
   // pintar el contorno
   //...
 
@@ -95,23 +104,23 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
     // CODIGO 3.2
     // filtrar y mostrar los defectos de convexidad
 		if (angle <= 90){
-    	circle(output_img,f,5,Scalar(0,255,0),3);
-			cont += 1;
+    		circle(output_img,f,5,Scalar(0,255,0),3);
+		cont++;
 		}
 
-		if(depth > 20 && depth < 80)
+		/*if(depth > 40 && depth < 200)
     {
     	line( output_img, s, f, CV_RGB(0,255,0), 2 );
-      line( output_img, e, f, CV_RGB(0,255,0), 2 );
-      circle( output_img, s,   4, Scalar(100,0,255), 2 );
-    }
+      	line( output_img, e, f, CV_RGB(0,255,0), 2 );
+      	circle( output_img, s,   4, Scalar(100,0,255), 2 );
+    }*/
   }
 
 	// Cuenta dedos
 	int dedos;
 	stringstream ss;
 	if (cont > 0)
-		dedos = cont + 1;
+		dedos = cont+1;
 	else
 		dedos = 0;
 	ss << dedos;
@@ -120,13 +129,12 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 
 	// dibujar
 	switch (dedos) {
-		case 0: cvtColor(output_img, output_img, COLOR_RGB2GRAY);
-						break;
+		case 0: exit(0);break;
 		case 1: break;
-		case 2: line(output_img, s, e, cvScalar(0,0,0), 3, 8);
-						break;
+		case 2: break;
 		case 3: break;
+		
 		case 4: break;
 		case 5: break;
-	}
+	}	
 }
