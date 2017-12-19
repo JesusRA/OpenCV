@@ -91,25 +91,42 @@ void HandGesture::FeaturesDetection(Mat mask, Mat output_img) {
 		f = contours[index][defects[i][2]];
 		float depth = (float)defects[i][3] / 256.0;
 		double angle = getAngle(s, e, f);
-		
+
     // CODIGO 3.2
     // filtrar y mostrar los defectos de convexidad
 		if (angle <= 90){
     	circle(output_img,f,5,Scalar(0,255,0),3);
 			cont += 1;
-
 		}
+
+		if(depth > 20 && depth < 80)
+    {
+    	line( output_img, s, f, CV_RGB(0,255,0), 2 );
+      line( output_img, e, f, CV_RGB(0,255,0), 2 );
+      circle( output_img, s,   4, Scalar(100,0,255), 2 );
+    }
   }
 
-	// Cuenta puntos
+	// Cuenta dedos
+	int dedos;
 	stringstream ss;
-	ss << cont;
-	string num_puntos = ss.str();
-	putText(output_img, num_puntos, Point2f(100,100), FONT_HERSHEY_PLAIN, 2,  cvScalar(0,0,0), 2);
+	if (cont > 0)
+		dedos = cont + 1;
+	else
+		dedos = 0;
+	ss << dedos;
+	string num_dedos = ss.str();
+	putText(output_img, num_dedos, Point2f(100,100), FONT_HERSHEY_PLAIN, 2,  cvScalar(0,0,0), 2);
 
 	// dibujar
-	if (cont == 1)
-	{
-		line(output_img, puntos[0], puntos[1], cvScalar(0,0,0), 1, 8);
+	switch (dedos) {
+		case 0: cvtColor(output_img, output_img, COLOR_RGB2GRAY);
+						break;
+		case 1: break;
+		case 2: line(output_img, s, e, cvScalar(0,0,0), 3, 8);
+						break;
+		case 3: break;
+		case 4: break;
+		case 5: break;
 	}
 }
